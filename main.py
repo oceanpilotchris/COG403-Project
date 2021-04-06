@@ -1,13 +1,17 @@
 # import module for handling csv files.
 import csv
 import lyricsgenius
-
+import re
 
 # open csv files.
 csv_file = open("sample Hot Stuff.csv", "r")
 # read csv file as a dictionaries, you can access each dictionary by iterating
 # through them.
 csv_reader = csv.DictReader(csv_file)
+
+song_names = []
+for songs in csv_reader:
+    song_names.append(songs["Song"])
 
 # TODO: write a function that inputs a WeekID '6/1/1963' and output the year.
 
@@ -25,8 +29,9 @@ csv_reader = csv.DictReader(csv_file)
 # get the lyrics
 token = "V8Opg99OuwwJOZcObVK7aKfIfloTdl-DJSvo5LMwmox5Tv5JNF-QByjyi6ff4m2i"
 genius = lyricsgenius.Genius(token, verbose=False)
-song = genius.search_song('Casanova', artist="Levert")
+song = genius.search_song('California Gurls', artist="Katy Perry Featuring Snoop Dogg")
 # TODO: clean up the lyrics using regex.
+lyrics = re.sub("\n", " ", song.lyrics)
 print(song.lyrics)
 # TODO: add it to the dictionary
 
