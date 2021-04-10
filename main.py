@@ -12,39 +12,53 @@ csv_reader = csv.DictReader(csv_file)
 
 
 # A bunch of basic getters
-def get_week_ids():
+def get_week_ids() -> list:
     week_ids = []
     for songs in csv_reader:
         week_ids.append(songs["WeekID"])
     return week_ids
 
-
-def get_song_names():
+def get_song_names() -> list:
     song_names = []
     for songs in csv_reader:
         song_names.append(songs["Song"])
     return song_names
 
-
-def get_performers():
+def get_performers() -> list:
     performers = []
     for songs in csv_reader:
         performers.append(songs["Performers"])
     return performers
 
-
-# TODO: write a function that inputs a WeekID '6/1/1963' and output the year.
 def get_year_published(week_id: str) -> int:
+    """
+    This function that inputs a WeekID '6/1/1963' and output the year.
+    :param week_id: "WeekID" of a song in Hot Stuff.csv
+    :return: int for of the year
+    """
     l = len(week_id)
     return int(week_id[l - 4: l])
-
 
 # TODO: iterate through the dictionaries and create a new dictionary as follows
 # the keys are the strings of the year of the songs, and the values are lists of
 # (song name, song artist).
+# step 1:
+# def get_i_by_year(first_year: int, last_year: int) -> List[int]:
+#     """
+#     Extracts songs from first_year-last_year and return them by their index in Hot Stuff.csv
+#     :param first_year: the first year to be included
+#     :param last_year: the last year to be included. last_year >= first_year
+#     :return: a list of the desired songs' index in Hot Stuff
+#     """
+#     indexes = []
+#     for i in range(len(get_week_ids())):
+#         if first_year <= get_year_published(get_week_ids()[i]) <= last_year:
+#             indexes.append(i)
+#     return indexes
+#
+# print(get_i_by_year(2008, 2019))
 
-# step 1: extract songs from 2008-2019 and store them
-
+print(get_week_ids())
 # step 2: create the desired dictionary
 
 
