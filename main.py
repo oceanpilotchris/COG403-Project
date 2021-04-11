@@ -9,26 +9,34 @@ csv_file = open("sample Hot Stuff.csv", "r")
 # read csv file as a dictionaries, you can access each dictionary by iterating
 # through them.
 csv_reader = csv.DictReader(csv_file)
-lines = len(list(csv_reader))
+lines = sum(1 for row in csv_reader)
+csv_file.seek(0)
+
 
 # A bunch of basic getters
 def get_week_ids() -> list:
+    csv_file.seek(0)
     week_ids = []
     for songs in csv_reader:
         week_ids.append(songs["WeekID"])
     return week_ids
 
+
 def get_song_names() -> list:
+    csv_file.seek(0)
     song_names = []
     for songs in csv_reader:
         song_names.append(songs["Song"])
     return song_names
 
+
 def get_performers() -> list:
+    csv_file.seek(0)
     performers = []
     for songs in csv_reader:
         performers.append(songs["Performers"])
     return performers
+
 
 def get_year_published(week_id: str) -> int:
     """
@@ -55,7 +63,7 @@ def get_i_by_year(first_year: int, last_year: int) -> List[int]:
         if first_year <= get_year_published(get_week_ids()[i]) <= last_year:
             indexes.append(i)
     return indexes
-print(get_week_ids())
+# print(get_week_ids())
 # print(get_i_by_year(2008, 2019))
 # song_info = {}
 #
