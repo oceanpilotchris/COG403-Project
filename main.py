@@ -9,34 +9,17 @@ csv_file = open("sample Hot Stuff.csv", "r")
 # read csv file as a dictionaries, you can access each dictionary by iterating
 # through them.
 csv_reader = csv.DictReader(csv_file)
-lines = sum(1 for row in csv_reader)
 csv_file.seek(0)
 
-
-# A bunch of basic getters
-def get_week_ids() -> list:
-    csv_file.seek(0)
-    week_ids = []
-    for songs in csv_reader:
-        week_ids.append(songs["WeekID"])
-    return week_ids
-
-
-def get_song_names() -> list:
-    csv_file.seek(0)
-    song_names = []
-    for songs in csv_reader:
-        song_names.append(songs["Song"])
-    return song_names
-
-
-def get_performers() -> list:
-    csv_file.seek(0)
-    performers = []
-    for songs in csv_reader:
-        performers.append(songs["Performers"])
-    return performers
-
+length = 0
+week_ids = []
+song_names = []
+performers = []
+for songs in csv_reader:
+    week_ids.append(songs["WeekID"])
+    song_names.append(songs["Song"])
+    performers.append(songs["Performer"])
+    length += 1
 
 def get_year_published(week_id: str) -> int:
     """
@@ -47,8 +30,8 @@ def get_year_published(week_id: str) -> int:
     l = len(week_id)
     return int(week_id[l - 4: l])
 
-# TODO: iterate through the dictionaries and create a new dictionary as follows
-# the keys are the strings of the year of the songs, and the values are lists of
+# Iterate through the dictionaries and create a new dictionary as follows
+# The keys are the strings of the year of the songs, and the values are lists of
 # (song name, song artist).
 # step 1:
 def get_i_by_year(first_year: int, last_year: int) -> List[int]:
@@ -59,18 +42,31 @@ def get_i_by_year(first_year: int, last_year: int) -> List[int]:
     :return: a list of the desired songs' index in Hot Stuff
     """
     indexes = []
-    for i in range(lines):
-        if first_year <= get_year_published(get_week_ids()[i]) <= last_year:
+    for i in range(length):
+        if first_year <= get_year_published(week_ids[i]) <= last_year:
             indexes.append(i)
     return indexes
-# print(get_week_ids())
+# print(length)
+# print(week_ids)
 # print(get_i_by_year(2008, 2019))
-# song_info = {}
-#
-#
-# print(song_info)
-# step 2: create the desired dictionary
 
+# step 2: create the desired dictionary
+def get_year_song_performer(indexes: List[int]) -> Dict[int, List[tuple[str]]]:
+    """
+    Gets a dict of songs from the desired years for further processing in lyricsgenius
+    :param indexes: the desired songs' indexes from the csv file
+    :return: a dict with year as the key and list of (song name, song artist) as values.
+    """
+    d = {}
+    for i in indexes:
+        year = get_year_published(week_ids[i])
+        if year not in d:
+            d[year] = []
+        song_name = song_names[i]
+        performer = performers[i]
+        d[year].append((song_name, performer))
+    return d
+# print(get_year_song_performer(get_i_by_year(2008, 2019)))
 
 # TODO: get the lyrics of each song and store them in a dictionary
 # the keys are the strings of year of the songs, and the values are lists of
