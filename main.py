@@ -33,7 +33,6 @@ def get_year_published(week_id: str) -> int:
 # Iterate through the dictionaries and create a new dictionary as follows
 # The keys are the strings of the year of the songs, and the values are lists of
 # (song name, song artist).
-# step 1:
 def get_i_by_year(first_year: int, last_year: int) -> List[int]:
     """
     Extracts songs from first_year-last_year and return them by their index in Hot Stuff.csv
@@ -50,7 +49,6 @@ def get_i_by_year(first_year: int, last_year: int) -> List[int]:
 # print(week_ids)
 # print(get_i_by_year(2008, 2019))
 
-# step 2: create the desired dictionary
 def get_year_song_performer(indexes: List[int]) -> Dict[int, List[tuple[str]]]:
     """
     Gets a dict of songs from the desired years for further processing in lyricsgenius
@@ -71,15 +69,23 @@ def get_year_song_performer(indexes: List[int]) -> Dict[int, List[tuple[str]]]:
 # TODO: get the lyrics of each song and store them in a dictionary
 # the keys are the strings of year of the songs, and the values are lists of
 # the song lyrics.
-
+desired_years = list(range(2008, 2019+1))
 
 # get the lyrics
 token = "V8Opg99OuwwJOZcObVK7aKfIfloTdl-DJSvo5LMwmox5Tv5JNF-QByjyi6ff4m2i"
 genius = lyricsgenius.Genius(token, verbose=False)
-song = genius.search_song('California Gurls', artist="Katy Perry Featuring Snoop Dogg")
-# TODO: clean up the lyrics using regex.
-lyrics = re.sub("\n", " ", song.lyrics)
-# print(song.lyrics)
+
+year2lyrics = {}
+for year in desired_years:
+    year2lyrics[year] = []
+    if year in get_year_song_performer(get_i_by_year(2008, 2019)):
+        for song_info in get_year_song_performer(get_i_by_year(2008, 2019))[year]:
+            song = genius.search_song(song_info[0], artist=song_info[1])
+            # song = genius.search_song('California Gurls', artist="Katy Perry Featuring Snoop Dogg")
+            # TODO: clean up the lyrics using regex.
+            lyrics = re.sub("\n", " ", song.lyrics)
+            print(lyrics)
+
 # TODO: add it to the dictionary
 
 csv_file.close()
