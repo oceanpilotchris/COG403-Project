@@ -21,7 +21,6 @@ csv_file = open("Hot Stuff.csv", "r", encoding='utf-8')
 # read csv file as a dictionaries, you can access each dictionary by iterating
 # through them.
 csv_reader = csv.DictReader(csv_file)
-csv_file.seek(0)
 
 length = 0
 week_ids = []
