@@ -68,21 +68,79 @@ for key in corr_18_25:
     if corr_18_25[key][0][0] <= -0.7:
         negacorr_18_25[key] = corr_18_25[key]
 
-print(len(posicorr_18_older))
-print(len(negacorr_18_older))
-print(len(posicorr_18_25))
-print(len(negacorr_18_25))
+# plotting the correlations and p-values
 
-#
+measure1 = []
+value1 = []
+for key in posicorr_18_older:
+    measure1.append(key)
+    if posicorr_18_older[key][0][1] <= 0.01:
+        value1.append(str(posicorr_18_older[key][0][0]) + '**')
+    elif 0.01 < posicorr_18_older[key][0][1] < 0.05:
+        value1.append(str(posicorr_18_older[key][0][0]) + '*')
+    else:
+        value1.append(str(posicorr_18_older[key][0][0]))
 
-
-
-fig = go.Figure(data=[go.Table(header=dict(values=['Measure', 'r']),
-                               cells=dict(values=[[100, 90, 80, 90], [95, 85, 75, 95]]))
+fig1 = go.Figure(data=[go.Table(header=dict(values=['Measure', 'r']),
+                               cells=dict(values=[measure1, value1]))
                       ])
-fig.show()
+fig1.update_layout(title="Strong Positive Correlations between lyrics preference and mental illness rate of adults aged 18 or older")
+fig1.show()
 
-plt.plot(measure_dict["year"], measure_dict["Comma"])
+measure2 = []
+value2 = []
+for key in negacorr_18_older:
+    measure2.append(key)
+    if negacorr_18_older[key][0][1] >= -0.01:
+        value2.append(str(negacorr_18_older[key][0][0]) + '**')
+    elif -0.05 < negacorr_18_older[key][0][1] < -0.01:
+        value2.append(str(negacorr_18_older[key][0][0]) + '*')
+    else:
+        value2.append(str(negacorr_18_older[key][0][0]))
+
+fig2 = go.Figure(data=[go.Table(header=dict(values=['Measure', 'r']),
+                                cells=dict(values=[measure2, value2]))
+                       ])
+fig2.update_layout(title="Strong Negative Correlations between lyrics preference and mental illness rate of adults aged 18 or older")
+fig2.show()
+
+measure3 = []
+value3 = []
+for key in posicorr_18_25:
+    measure3.append(key)
+    if posicorr_18_25[key][0][1] <= 0.01:
+        value3.append(str(posicorr_18_25[key][0][0]) + '**')
+    elif 0.01 < posicorr_18_25[key][0][1] < 0.05:
+        value3.append(str(posicorr_18_25[key][0][0]) + '*')
+    else:
+        value3.append(str(posicorr_18_25[key][0][0]))
+
+fig3 = go.Figure(data=[go.Table(header=dict(values=['Measure', 'r']),
+                                cells=dict(values=[measure3, value3]))
+                       ])
+fig3.update_layout(title="Strong Positive Correlations between lyrics preference and mental illness rate of adults aged 18-25")
+fig3.show()
+
+measure4 = []
+value4 = []
+for key in negacorr_18_25:
+    measure4.append(key)
+    if negacorr_18_25[key][0][1] >= -0.01:
+        value4.append(str(negacorr_18_25[key][0][0]) + '**')
+    elif -0.05 < negacorr_18_25[key][0][1] < -0.01:
+        value4.append(str(negacorr_18_25[key][0][0]) + '*')
+    else:
+        value4.append(str(negacorr_18_25[key][0][0]))
+
+fig4 = go.Figure(data=[go.Table(header=dict(values=['Measure', 'r']),
+                                cells=dict(values=[measure4, value4]))
+                       ])
+fig4.update_layout(title="Strong Negative Correlations between lyrics preference and mental illness rate of adults aged 18-25")
+fig4.show()
+
+# Plot the lyrics measures over time
+
+# plt.plot(measure_dict["year"], measure_dict["Comma"])
 # plt.xticks(np.arange(min(x), max(x)+1, 1.0))
 # plt.xticks(np.arange(min(x), max(x)+1, 1.0))
 #plt.show()
