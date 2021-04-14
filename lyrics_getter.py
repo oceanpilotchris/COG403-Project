@@ -4,8 +4,20 @@ from typing import List, Dict
 import lyricsgenius
 import re
 
+
+
+# output = "lyrics2012.csv"
+# desired_years = [2012]
+
+output = "lyrics.csv"
+desired_years = list(range(2008, 2019+1))
+
+
+
+
+
 # open csv files.
-csv_file = open("sample Hot Stuff.csv", "r")
+csv_file = open("Hot Stuff.csv", "r", encoding='utf-8')
 # read csv file as a dictionaries, you can access each dictionary by iterating
 # through them.
 csv_reader = csv.DictReader(csv_file)
@@ -49,7 +61,7 @@ def get_i_by_year(first_year: int, last_year: int) -> List[int]:
 # print(week_ids)
 # print(get_i_by_year(2008, 2019))
 
-def get_year_song_performer(indexes: List[int]) -> Dict[int, List[tuple[str]]]:
+def get_year_song_performer(indexes: List[int]) -> Dict:
     """
     Gets a dict of songs from the desired years for further processing in lyricsgenius
     :param indexes: the desired songs' indexes from the csv file
@@ -62,30 +74,47 @@ def get_year_song_performer(indexes: List[int]) -> Dict[int, List[tuple[str]]]:
             d[year] = []
         song_name = song_names[i]
         performer = performers[i]
-        d[year].append((song_name, performer))
+        if (song_name, performer) not in d[year]:
+            d[year].append((song_name, performer))
     return d
 # print(get_year_song_performer(get_i_by_year(2008, 2019)))
 
 # TODO: get the lyrics of each song and store them in a dictionary
 # the keys are the strings of year of the songs, and the values are lists of
 # the song lyrics.
-desired_years = list(range(2008, 2019+1))
+#desired_years = list(range(2008, 2019+1))
+
 
 # get the lyrics
 token = "V8Opg99OuwwJOZcObVK7aKfIfloTdl-DJSvo5LMwmox5Tv5JNF-QByjyi6ff4m2i"
-genius = lyricsgenius.Genius(token, verbose=False)
+genius = lyricsgenius.Genius(token, verbose=False, timeout=15, retries=3)
 
+counter = 1
 year2lyrics = {}
 for year in desired_years:
     year2lyrics[year] = []
     if year in get_year_song_performer(get_i_by_year(2008, 2019)):
-        for song_info in get_year_song_performer(get_i_by_year(2008, 2019))[year]:
+        song_infos = get_year_song_performer(get_i_by_year(2008, 2019))[year]
+        for song_info in song_infos:
             song = genius.search_song(song_info[0], artist=song_info[1])
             # song = genius.search_song('California Gurls', artist="Katy Perry Featuring Snoop Dogg")
-            # TODO: clean up the lyrics using regex.
-            lyrics = re.sub("\n", " ", song.lyrics)
-            print(lyrics)
+            if song is not None:
+                print("processing song " + str(counter) + " : " + song_info[0])
+                # TODO: clean up the lyrics using regex.
+                lyrics = re.sub("\n", " ", song.lyrics)
+                lyrics = re.sub(r'\[(.*?)\]', "", lyrics)
+                year2lyrics[year].append(lyrics)
+                counter += 1
 
-# TODO: add it to the dictionary
 
+try:
+    with open(output, 'w', encoding='utf-8') as output:
+        writer = csv.writer(output)
+        for key, value in year2lyrics.items():
+            writer.writerow([key, value])
+except IOError:
+    print("I/O error")
+
+output.close()
 csv_file.close()
+print("all done")
